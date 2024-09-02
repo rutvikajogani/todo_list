@@ -1,0 +1,19 @@
+
+#input{
+        height: 5vh;
+        width: 30vw;
+        color: palevioletred;
+    }
+    button{
+        height: 5vh;
+        width: 10vw;
+        background-color: plum;
+        color: white;
+        border: none;
+
+
+    }
+    button:hover{
+        color: black;
+    }
+    
