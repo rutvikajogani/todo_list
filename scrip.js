@@ -1,46 +1,67 @@
+
+
 const list = document.getElementById("list");
 
-const valueList = [];
+const storeValue = JSON.parse(localStorage.getItem("todo")) || [];
 
-
-function deleteItem( element,index) {
-   
-    valueList.splice(index, 1);
-  element.parentNode.remove();
+if(storeValue.length){
+    renderValue()
 }
 
-function displayTasks() {
+function updateStorage() {
 
-    let text = "";
-    for (let i = 0; i < valueList.length; i++) {
+    localStorage.setItem("todo", JSON.stringify(storeValue));
+}
+
+function removeItem(element, index) {
+    storeValue.splice(index, 1);
+    element.parentNode.remove();
+    updateStorage();
+}
+
+function checkbox(element, index) {
+    storeValue[index].status = element.checked;
+    updateStorage();
+    renderValue();
+}
+
+function renderValue() {
+
+    let label = "";
+
+    for (let i = 0; i < storeValue.length; i++) {
+
+        const status = storeValue[i].status;
+
         const temp = `
         <div>
-            <label for="">
-                <input type="checkbox">
-                ${valueList[i]}
+            <label for="" class="${status ? "line" : ""}">
+                <input type="checkbox" onchange="checkbox(this, ${i})" ${status ? "checked" : null}>
+                ${storeValue[i].name}
             </label>
-            <button onclick="deleteItem(this,${i})">delete</button>
-        </div>
-        `
+            ${status ? "" : `<button onclick="removeItem(this, ${i})">Delete</button>`}
+        </div>`
 
-        text  += temp;
+        label += temp;
     }
 
-    list.innerHTML = text;
+    list.innerHTML = label;
     document.getElementById("input").value = "";
 
 }
 
 function addTask() {
-    const inputElement = document.getElementById("input");
-    if(inputElement.value.trim()){
-    valueList.push(inputElement.value);
-    displayTasks();
+    const value = document.getElementById("input").value;
+    if (value.trim()) { 
+        const temp = {
+            name: value,
+            status: false
+        }
+        storeValue.push(temp);
+        updateStorage();
+        renderValue();
     }
-    document.getElementById("input").value = "";
-
 }
-
 
 document.getElementById("input").addEventListener("keydown", function(event) {
     if (event.key === "Enter") { 
